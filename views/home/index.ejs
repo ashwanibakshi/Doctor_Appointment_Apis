@@ -20,49 +20,62 @@
 <body>
     <div class=" col-md-4">
       <div  class="date-picker-2" placeholder="Recipient's username" id="ttry" aria-describedby="basic-addon2"></div>
-      <span class="" id="example-popover-2"></span> </div>
-    <div id="example-popover-2-content" class="hidden"> </div>
-    <div id="example-popover-2-title" class="hidden"> </div>
+      <!-- <span class="" id="example-popover-2"></span> </div>
+    <div id="example-popover-2-content" class="hidden"> </div> -->
+    <br>
+    <div id="timeslot">
+        <table class="table table-responsive table-bordered">
+            <tbody class="tbdy">
+                
+            </tbody>
+         </table>
+    </div>
 <script>
-$('.date-picker-2').popover({
-    html : true, 
-    content: function() {
-      return $("#example-popover-2-content").html();
-    },
-    title: function() {
-      return $("#example-popover-2-title").html();
-    }
-});
+$(document).ready(()=>{    
+    $("#timeslot").hide();
+// $('.date-picker-2').popover({
+//     html : true, 
+//     content: function() {
+//       return $("#example-popover-2-content").html();
+//     },
+//     title: function() {
+//       return $("#example-popover-2-title").html();
+//     }
+// });
 $(".date-picker-2").datepicker({
-    dateFormat: 'yy-mm-dd',
-    // onSelect: function(dateText) { 
-    //     console.log(dateText);
-    //     $('#example-popover-2-title').html('<b>Avialable Appiontments</b>');
-    //     // $.ajax({
-    //     //     method:"get",
-    //     //        url:"http://localhost:3000/api/v1/appointment/fetch",
-
-    //     // })
-    //     var html = '<button  class="btn btn-success">8:00 am – 9:00 am</button><br><button  class="btn btn-success">10:00 am – 12:00 pm</button><br><button  class="btn btn-success">12:00 pm – 2:00 pm</button>';
-    //     $('#example-popover-2-content').html('Avialable Appiontments On <strong>'+dateText+'</strong><br>'+html);
-    //     $('.date-picker-2').popover('show');
-    // }
+    dateFormat: 'yy-mm-dd'
 });
 $(".date-picker-2").on("change", function () {
+    $("#timeslot").hide();
         var fromdate = $(this).val();
         alert(fromdate);
         $.ajax({
-            method:"get",
+            method:"post",
             url   :"http://localhost:3000/api/v1/appointment/fetch",
+            data  :{"date":fromdate},
             success:function(data){
-               console.log(data);
+               console.log(data.data);
+               if(data.data){
+                  $("#timeslot").show();
+                  let x = ['09:00-09:15','09:15-09:30','09:30-09:45','09:45-10:00','10:00-10:15','10:15-10:30',
+                 '10:30-10:45','10:45-11:00','11:00-11:15']
+                  $.each(data.data,(index,value)=>{
+                      console.log(x[index],value.slottime);
+                      if(value.slottime==x[index]){
+                        $(".tbdy").append('<tr><td><button class="disabled btn btn-danger">'+value.slottime+'</button></td><tr>')
+                      } 
+                      else{
+                        $(".tbdy").append('<tr><td><button class="btn btn-success">'+x[index]+'</button></td><tr>')
+                      }
+                  })
+               }
             },
             error:function(err){
-                console.log(err);
+                console.log('error',err);
             }
         });
     });
-
+});
 </script> 
 </body>
 </html>

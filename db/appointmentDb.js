@@ -35,7 +35,7 @@ module.exports.booking=(data)=>{
     });
 }
 
-module.exports.fetchData=(date)=>{
+module.exports.fetchData=(data)=>{
     return new Promise((resolve,reject)=>{
        try {
            connect.getConnection((err,connection)=>{
@@ -43,12 +43,14 @@ module.exports.fetchData=(date)=>{
                    reject(err);
                }
                else{
-                   let sql = "select * from appointment where date="+connect.escape(date);
+                   console.log(data);
+                   let sql = "select * from appointment where date="+connect.escape(data.date);
                    connect.query(sql,(err,dataa)=>{
                        if(err){
                            reject(err);
                        }
                        else if(dataa.length){
+
                            resolve(dataa);
                        }
                        else{
