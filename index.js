@@ -1,6 +1,7 @@
 const express     = require("express");
 const mysql       = require("mysql");
 const connect     = require("./config/db");
+const path        = require("path");
 
 const app    = express();
 
@@ -26,6 +27,9 @@ app.use(express.json());
 app.get('/',(req,res)=>{
       res.render("home/index");
 });
+
+//static folder
+app.use(express.static(path.resolve(__dirname,"public")));
 
 //routes
 app.use('/api/v1/',require("./routes/routes"));

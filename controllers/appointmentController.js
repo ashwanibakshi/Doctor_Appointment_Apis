@@ -1,5 +1,9 @@
 const appointmentDb  = require("../db/appointmentDb");
 
+module.exports.bookingPage=(req,res)=>{
+    res.render("dashboard/patient/booking");
+}
+
 module.exports.booking=(req,res)=>{
     appointmentDb.booking(req.body)
     .then((data)=>{

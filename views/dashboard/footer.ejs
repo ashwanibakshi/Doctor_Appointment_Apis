@@ -1,0 +1,109 @@
+<!-- <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script> -->
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+<script>
+    $(document).ready(()=>{    
+      $("#timeslot").hide();
+    // $('.date-picker-2').popover({
+    //     html : true, 
+    //     content: function() {
+    //       return $("#example-popover-2-content").html();
+    //     },
+    //     title: function() {
+    //       return $("#example-popover-2-title").html();
+    //     }
+    // });
+    // var array = ["2021-09-21","2021-09-22","2021-09-23"]
+    $(".date-picker-2").datepicker({                                              
+      dateFormat: 'yy-mm-dd',
+    //   beforeShowDay: function(date){
+    //     var string = jQuery.datepicker.formatDate('yy-mm-dd', date);
+    //     return [ array.indexOf(string) == -1 ]
+    //  }
+    });
+
+    var x = ['09:00-09:15','09:15-09:30','09:30-09:45','09:45-10:00',
+             '10:00-10:15','10:15-10:30','10:30-10:45','10:45-11:00','11:00-11:15']
+    // var x = new Array();
+    //  x.push({"slottime":'09:00-09:15'},{"slottime":'09:15-09:30'});
+                   var fromdate;
+
+
+    $(".date-picker-2").on("change", function () {
+      $("#timeslot").hide();
+        fromdate = $(this).val();
+        if((fromdate === new Date().toLocaleDateString('en-CA'))||(fromdate>new Date().toLocaleDateString('en-CA'))){
+                  alert(fromdate);
+                  fetchAppointemts();
+            }
+         });
+       //------------------------------ ends --------------------------------------//
+
+      //------------------ for booking appointment -------------------------------//
+    $(document).on('click','button.appoint',function(){
+                  $(this).prop('disabled',true)
+                 // alert($(this).text());  
+                 $.ajax({
+                     url:"/api/v1/appointment/book",
+                  method:"post",
+                  data:{'docid':1,'userid':1,'date':fromdate,'slot':$(this).text()},
+                  success:function(data){
+                             if(data.data){
+                                 fetchAppointemts()
+                                 alert(data.data)
+                             }       
+                            else{
+                                console.log('eror');
+                            }
+                  },
+                  error:function(err){
+                         console.log(err);
+                   }
+                 });
+              });
+        //------------------------------- ends ---------------------------//
+             
+       //------------- fetch the appointment by date ---------------------//
+ 
+                function fetchAppointemts(){
+                  alert('da');
+                 $.ajax({
+               method:"post",
+               url   :"http://localhost:3000/api/v1/appointment/fetch",
+               data  :{"date":fromdate},
+               success:function(data){
+                 
+                 //remove the 
+                 $("#timeslot").find('.col-sm-4').remove();
+                  
+                 //temp variable
+                 var temp;
+
+
+                   for(var i=0;i<x.length;i++){
+                        for(var j=0;j<data.data.length;j++){
+                         if(x[i]==data.data[j].slottime){
+                           $("#book").append('<div class="col-sm-4 px-0"><div class="card"><button type="button" class="btn btn-danger">'+x[i]+'</button></div></div>');
+                             temp = x[i];
+                          }
+                        }
+
+                          if(x[i]!==temp){
+                         $("#book").append('<div class="col-sm-4 px-0"><div class="card"><button type="button" class="btn btn-success appoint">'+x[i]+'</button></div></div>');
+                          }
+                    }
+                     
+                     // console.log($("#book .appoint").index())
+                     $("#timeslot").show();
+                 },
+                  error:function(err){
+                   console.log('error',err);
+                   }
+                 });
+                }
+
+     });
+    </script> 
+
+</body>
+</html>

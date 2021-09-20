@@ -1,6 +1,10 @@
 const { resolveInclude } = require("ejs");
-const userDb    = require("../db/userDb");
+const userDb    = require("../db/patientDb");
 
+
+module.exports.getRegister=(req,res)=>{
+     res.render('dashboard/patient/register');
+}
 
 module.exports.postRegister=(req,res)=>{
          try {
@@ -17,6 +21,9 @@ module.exports.postRegister=(req,res)=>{
          }
 }
 
+module.exports.getLogin=(req,res)=>{
+    res.render('dashboard/patient/login');
+}
 
 module.exports.postLogin=(req,res)=>{
 
@@ -46,6 +53,12 @@ module.exports.postLogin=(req,res)=>{
            reject(error);
        }
 }
+
+module.exports.index=(req,res)=>{
+       res.render('dashboard/patient/index');
+}
+
+
 
 module.exports.editUserProfile=(req,res)=>{
         userDb.editUserProfile(req.params.id)
