@@ -1,7 +1,7 @@
 const  connect      = require("../config/db");
 const bcrypt        = require("bcrypt");
 
-module.exports.registerUser=(data)=>{
+module.exports.registerPatient=(data)=>{
     return new Promise((resolve,reject)=>{
         try {
             connect.getConnection((err,connection)=>{
@@ -101,7 +101,7 @@ module.exports.comparePassword=(pass,hash)=>{
  });
 }
 
-module.exports.editUserProfile=(id)=>{
+module.exports.editPatientProfile=(id)=>{
     return new Promise((resolve,reject)=>{
        try {
            connect.getConnection((err,connection)=>{
@@ -130,7 +130,7 @@ module.exports.editUserProfile=(id)=>{
     });
 }
 
-module.exports.updateUserProfile=(data)=>{
+module.exports.updatePatientProfile=(data)=>{
     return new Promise((resolve,reject)=>{
         try {
          connect.getConnection((err,connection)=>{

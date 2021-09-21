@@ -1,15 +1,19 @@
-const { resolveInclude } = require("ejs");
-const userDb    = require("../db/patientDb");
+const patientDb    = require("../db/patientDb");
 
 
 module.exports.getRegister=(req,res)=>{
      res.render('dashboard/patient/register');
 }
 
+module.exports.getLogin=(req,res)=>{
+    res.render('dashboard/patient/login');
+}
+
+
 module.exports.postRegister=(req,res)=>{
          try {
              console.log(req.body);
-             userDb.registerUser(req.body)
+             patientDb.registerPatient(req.body)
              .then((data)=>{
                  res.json({data:"user registerd",msg:"success"})
              }) 
@@ -21,17 +25,13 @@ module.exports.postRegister=(req,res)=>{
          }
 }
 
-module.exports.getLogin=(req,res)=>{
-    res.render('dashboard/patient/login');
-}
-
 module.exports.postLogin=(req,res)=>{
 
        try {
-           userDb.checkEmail(req.body.email)
+           patientDb.checkEmail(req.body.email)
            .then((data)=>{
                 if(data.length){
-                   return userDb.comparePassword(req.body.password,data[0].password)
+                   return patientDb.comparePassword(req.body.password,data[0].password)
                 }
                 else{
                     res.json({data:"user not registered",msg:"success"});
@@ -58,10 +58,8 @@ module.exports.index=(req,res)=>{
        res.render('dashboard/patient/index');
 }
 
-
-
-module.exports.editUserProfile=(req,res)=>{
-        userDb.editUserProfile(req.params.id)
+module.exports.editPatientProfile=(req,res)=>{
+        patientDb.editPatientProfile(req.params.id)
         .then((data)=>{
             res.json({data:data,msg:"success"});
         })
@@ -70,10 +68,20 @@ module.exports.editUserProfile=(req,res)=>{
         })
 }
 
-module.exports.updateUserProfile=(req,res)=>{
-     userDb.updateUserProfile(req.body)
+module.exports.updatePatientProfile=(req,res)=>{
+     patientDb.updatePatientProfile(req.body)
      .then((data)=>{
          res.json({data:data,msg:"success"});
+     })
+     .catch((err)=>{
+         res.json({error:err.message});
+     })
+}
+
+module.exports.updatePatientStatus=(id)=>{
+     patientDb.updateProfileStatus(id)
+     .then((data)=>{
+          res.json({data:data,msg:"success"}); 
      })
      .catch((err)=>{
          res.json({error:err.message});

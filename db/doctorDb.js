@@ -22,7 +22,9 @@ module.exports.addDoctor=(data)=>{
                         "qualification" : data.qualification,
                                  "phno" : data.phno,
                                  "email": data.email,
-                                "timing": data.timing 
+                                  "from": data.from,
+                                   "to" : data.to,
+                           "department" : data.department
                              }
                           let sql = "insert into doctors set?";
                           connection.query(sql,[doctor],(err,dataa)=>{
@@ -111,8 +113,8 @@ module.exports.updateDoctorProfile=(data)=>{
                     reject(err);
                     }
                     else{
-                    let sql = "update doctors set name=?,qualification=?,phno=? where docid=?";
-                    connection.query(sql,[data.name,data.qualification,data.phno,data.docid],(err,data)=>{
+                    let sql ='update doctors set name=?,qualification=?,phno=?,seefrom=?,seeto=?,department=? where docid=? '
+                    connection.query(sql,[data.name,data.qualification,data.phno,data.seefrom,data.seeto,data.department,data.docid],(err,data)=>{
                         if(err){
                             reject(err);
                         }
@@ -122,6 +124,7 @@ module.exports.updateDoctorProfile=(data)=>{
                         else{
                             reject({message:"profile not updated"});
                         }
+                        connection.release();
                     });
                     }
                 });   
