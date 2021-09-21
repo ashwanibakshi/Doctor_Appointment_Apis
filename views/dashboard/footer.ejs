@@ -33,7 +33,7 @@
       $("#timeslot").hide();
         fromdate = $(this).val();
         if((fromdate === new Date().toLocaleDateString('en-CA'))||(fromdate>new Date().toLocaleDateString('en-CA'))){
-                  alert(fromdate);
+                  // alert(fromdate);
                   fetchAppointemts();
             }
          });
@@ -50,7 +50,7 @@
                   success:function(data){
                              if(data.data){
                                  fetchAppointemts()
-                                 alert(data.data)
+                                //  alert(data.data)
                              }       
                             else{
                                 console.log('eror');
@@ -66,7 +66,7 @@
        //------------- fetch the appointment by date ---------------------//
  
                 function fetchAppointemts(){
-                  alert('da');
+                  // alert('da');
                  $.ajax({
                method:"post",
                url   :"http://localhost:3000/api/v1/appointment/fetch",

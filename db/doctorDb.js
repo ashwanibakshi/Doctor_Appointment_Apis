@@ -45,3 +45,88 @@ module.exports.addDoctor=(data)=>{
          }
     });
 }
+
+module.exports.editDoctor=(id)=>{
+        return new Promise((resolve,reject)=>{
+             try {
+                  connect.getConnection((err,connection)=>{
+                       if(err){
+                           reject(err);
+                       }
+                       else{
+                        let sql = "select * from doctors where docid="+connect.escape(id)
+                         connection.query(sql,(err,data)=>{
+                                if(err){
+                                    reject(err);
+                                }
+                                else if(data){
+                                     resolve(data); 
+                                }
+                                else{
+                                    reject({message:"data not found"});
+                                }
+                            });   
+                        }
+                     });
+                  } catch (error) {
+                   reject(error);
+             }
+        });
+}
+
+module.exports.updateStatus=(id)=>{
+        return new Promise((req,res)=>{
+             try {
+               connect.getConnection((err,connection)=>{
+                  if(err){
+                      reject(err);
+                  }
+                  else{
+                      let sql="update doctors set status=? where docid=?";
+                      connection.query(sql,['unavailable',id],(err,data)=>{
+                         if(err){
+                             reject(err);
+                         }
+                         else if(data.affectedRows>0){
+                            resolve(data.affectedRows);          
+                         }
+                         else{
+                             reject({message:"status not updated"});
+                         }
+                      });
+                  }
+               });    
+             } catch (error) {
+                 reject(error);
+             }
+        }); 
+}
+
+module.exports.updateDoctorProfile=(data)=>{
+        return new Promise((resolve,reject)=>{
+            try {
+                console.log(data);
+                connect.getConnection((err,connection)=>{
+                    if(err){
+                    reject(err);
+                    }
+                    else{
+                    let sql = "update doctors set name=?,qualification=?,phno=? where docid=?";
+                    connection.query(sql,[data.name,data.qualification,data.phno,data.docid],(err,data)=>{
+                        if(err){
+                            reject(err);
+                        }
+                        else if(data.affectedRows>0){
+                                resolve(data.affectedRows);
+                        }
+                        else{
+                            reject({message:"profile not updated"});
+                        }
+                    });
+                    }
+                });   
+            } catch (error) {
+                reject(error);
+            }       
+        });
+}
