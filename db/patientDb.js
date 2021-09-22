@@ -181,9 +181,55 @@ module.exports.updateProfileStatus=(id)=>{
                       }
                    });
                   }
+                  connection.release();
               }); 
           } catch (error) {
               reject(error);
           }
      });
+}
+
+module.exports.showAllPaitent=(perPage,page)=>{
+    return new Promise((resolve,reject)=>{
+       try {
+
+         page  = parseInt(page);
+         perPage = parseInt(perPage); 
+        //  var numPerPage = 5;
+        let skip = (page-1) * perPage; 
+        let limit = skip + ',' + perPage;
+           let sql="select * from users order by userid LIMIT "+ limit;
+           connect.getConnection((err,connection)=>{
+                if(err){
+                    reject(err);
+                }
+                else{
+                 connection.query(sql,(err,data)=>{
+                      if(err){
+                          reject(err);
+                      }
+                      else{
+                    let sql2 = "select count(*)as count from users";
+                    connection.query(sql2,(err,count)=>{
+                            if(err){
+                                reject(err);
+                            }
+                            else{
+                                console.log("count",count[0].count);
+                                let da={
+                                    data:data,
+                                    count:count
+                                }
+                                resolve(da);
+                            }
+                       });
+                      }
+                    });   
+                }
+                connection.release();
+           });    
+       } catch (error) {
+           reject(error);
+       }
+    });
 }

@@ -22,8 +22,8 @@ module.exports.addDoctor=(data)=>{
                         "qualification" : data.qualification,
                                  "phno" : data.phno,
                                  "email": data.email,
-                                  "from": data.from,
-                                   "to" : data.to,
+                               "seefrom": data.seefrom,
+                                "seeto" : data.seeto,
                            "department" : data.department
                              }
                           let sql = "insert into doctors set?";
@@ -56,7 +56,7 @@ module.exports.editDoctor=(id)=>{
                            reject(err);
                        }
                        else{
-                        let sql = "select * from doctors where docid="+connect.escape(id)
+                        let sql = "select name,qualification,seefrom,seeto,department,docid from doctors where docid="+connect.escape(id)
                          connection.query(sql,(err,data)=>{
                                 if(err){
                                     reject(err);
@@ -132,4 +132,51 @@ module.exports.updateDoctorProfile=(data)=>{
                 reject(error);
             }       
         });
+}
+
+// module.exports.getDepartments=()=>{
+    
+// }
+
+module.exports.showAllDoctors=(perPage,page)=>{
+     return new Promise((resolve,reject)=>{
+            try {
+                page  = parseInt(page);
+                perPage = parseInt(perPage); 
+               let skip = (page-1) * perPage; 
+               let limit = skip + ',' + perPage;
+               let sql="select * from doctors order by docid LIMIT "+ limit; 
+               connect.getConnection((err,connection)=>{
+                if(err){
+                    reject(err);
+                }
+                else{
+                 connection.query(sql,(err,data)=>{
+                      if(err){
+                          reject(err);
+                      }
+                      else{
+                    let sql2 = "select count(*)as count from doctors";
+                    connection.query(sql2,(err,count)=>{
+                            if(err){
+                                reject(err);
+                            }
+                            else{
+                                // console.log("count",count[0].count);
+                                let da={
+                                    data:data,
+                                    count:count
+                                }
+                                resolve(da);
+                            }
+                        });
+                      }
+                    });   
+                }
+                connection.release();
+           });     
+            } catch (error) {
+                reject(error);
+            }
+     });
 }

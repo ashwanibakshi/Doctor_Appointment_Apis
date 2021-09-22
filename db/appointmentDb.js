@@ -70,3 +70,33 @@ module.exports.fetchData=(data)=>{
        }
     });
 }
+
+module.exports.bookingHistory=(perPage,page,id)=>{
+    return new Promise((resolve,reject)=>{
+         try {
+             connect.getConnection((err,connection)=>{
+                 if(err){
+                     reject(err);
+                 }
+                 else{
+                    page  = parseInt(page);
+                    perPage = parseInt(perPage); 
+                   let skip = (page-1) * perPage; 
+                   let limit = skip + ',' + perPage;
+        let sql="select appointment.userid,appointment.docid,appointment.date,appointment.slottime from appointment INNER JOIN users on appointment.userid = users.userid where appointment.userid=  order by userid LIMIT "+connect.escape(id,limit);
+                    connection.query(sql,(err,data)=>{
+                       if(err){
+                           reject(err);
+                       } 
+                       else{
+                           resolve(data);
+                       }
+                    });
+                 }
+                connection.release();
+             }) 
+         } catch (error) {
+             reject(error);
+         }
+    });
+}

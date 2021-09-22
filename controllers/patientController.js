@@ -87,3 +87,26 @@ module.exports.updatePatientStatus=(id)=>{
          res.json({error:err.message});
      })
 }
+
+module.exports.showAllPatient=(req,res)=>{
+    var page = 1;
+    var perpage = 5;
+    if(req.query.page){
+      page = req.query.page;
+       }
+    if(req.query.perpage){
+        perpage = req.query.perpage;
+    }
+    patientDb.showAllPaitent(perpage,page)
+    .then((data)=>{
+        console.log(data.count);
+        res.json({
+        data: data.data,
+        current: page,
+        pages: Math.ceil(data.count[0].count / perpage)
+        });
+    })
+    .catch((err)=>{
+        res.json({error:err.message});
+    })
+}

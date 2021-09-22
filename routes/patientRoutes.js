@@ -10,6 +10,5 @@ router.get('/index',                patientController.index);
 
 router.get('/profile/:id',          patientController.editPatientProfile);
 router.put('/profile/update',       patientController.updatePatientProfile);
-router.put('/update/status/:id',    patientController.updatePatientStatus);
 
 module.exports = router;
