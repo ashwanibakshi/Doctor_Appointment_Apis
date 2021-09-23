@@ -83,13 +83,25 @@ module.exports.bookingHistory=(perPage,page,id)=>{
                     perPage = parseInt(perPage); 
                    let skip = (page-1) * perPage; 
                    let limit = skip + ',' + perPage;
-        let sql="select appointment.userid,appointment.docid,appointment.date,appointment.slottime from appointment INNER JOIN users on appointment.userid = users.userid where appointment.userid=  order by userid LIMIT "+connect.escape(id,limit);
+        let sql="select appointment.userid,appointment.docid,appointment.date,appointment.slottime from appointment INNER JOIN users on appointment.userid = users.userid  where appointment.userid='"+parseInt(id)+"' order by appointment.userid LIMIT "+limit;
                     connection.query(sql,(err,data)=>{
                        if(err){
                            reject(err);
                        } 
                        else{
-                           resolve(data);
+                        let sql2="select count(*) as count from appointment INNER JOIN users on appointment.userid=users.userid where appointment.userid="+connect.escape(parseInt(id))
+                        connection.query(sql2,(err,count)=>{
+                             if(err){
+                                 reject(err);
+                             }
+                             else{
+                                 let da ={
+                                     count : count[0].count,
+                                     data  : data
+                                 }
+                                resolve(da);       
+                             }
+                         });
                        }
                     });
                  }

@@ -34,7 +34,11 @@ module.exports.patientBookingHistory=(req,res)=>{
     }
     appointmentDb.bookingHistory(perpage,page,req.params.id)
     .then((data)=>{
-        res.json({data:data,msg:"success"});
+        res.json({
+                data : data.data,
+             current : page,
+               pages : Math.ceil(data.count/perpage)    
+        });
     })
     .catch((err)=>{
         res.json({error:err.message});
